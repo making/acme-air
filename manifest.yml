@@ -1,0 +1,10 @@
+applications:
+- name: acmeair
+  path: target/acmeair-0.0.1-SNAPSHOT.jar
+  memory: 256m
+  env:
+    JBP_CONFIG_OPEN_JDK_JRE: '{memory_calculator: {stack_threads: 16}, jre: {version: 11.+}}'
+    JAVA_OPTS: -XX:ReservedCodeCacheSize=32M -Xss512k -Duser.timezone=Asia/Tokyo
+    SPRING_JPA_HIBERNATE_DDLAUTO: update
+  services:
+  - acmeair-db
