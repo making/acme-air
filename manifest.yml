@@ -2,6 +2,8 @@ applications:
 - name: acmeair
   path: target/acmeair-0.0.1-SNAPSHOT.jar
   memory: 256m
+  health-check-type: http
+  health-check-http-endpoint: /actuator/health
   env:
     JBP_CONFIG_OPEN_JDK_JRE: '{memory_calculator: {stack_threads: 16}, jre: {version: 11.+}}'
     JAVA_OPTS: -XX:ReservedCodeCacheSize=32M -Xss512k -Duser.timezone=Asia/Tokyo
@@ -10,5 +12,12 @@ applications:
     SERVER_COMPRESSION_ENABLED: true
     SERVER_COMPRESSION_MINRESPONSESIZE: 1KB
     SERVER_TOMCAT_THREADS_MAX: 4
+    MANAGEMENT_METRICS_TAGS_ORGANIZATION: ${vcap.application.organization_name}
+    MANAGEMENT_METRICS_TAGS_SPACE: ${vcap.application.space_name}
+    MANAGEMENT_METRICS_TAGS_APPLICATION: ${vcap.application.application_name}
+    MANAGEMENT_METRICS_TAGS_INSTANCE_ID: ${management.metrics.tags.application}:${vcap.application.instance_index}
+    MANAGEMENT_METRICS_EXPORT_PROMETHEUS_RSOCKET_HOST: ${vcap.services.prometheus-rsocket-proxy.credentials.host}
+    MANAGEMENT_METRICS_EXPORT_PROMETHEUS_RSOCKET_PORT: ${vcap.services.prometheus-rsocket-proxy.credentials.port}
   services:
-  - acmeair-db
+  - acmeair-db # cf create-service elephantsql turtle acmeair-db
+  - prometheus-rsocket-proxy # cf create-user-provided-service prometheus-rsocket-proxy -p '{"host": "rsocket.example.com", "port": 7001}'
