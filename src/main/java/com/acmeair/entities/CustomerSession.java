@@ -30,16 +30,16 @@ public class CustomerSession implements Serializable {
     @Column(columnDefinition = "VARCHAR")
     private String id;
     @Column(name = "customer_id")
-    private String customerid;
+    private String customerId;
     private Date lastAccessedTime;
     private Date timeoutTime;
 
     public CustomerSession() {
     }
 
-    public CustomerSession(String id, String customerid, Date lastAccessedTime, Date timeoutTime) {
+    public CustomerSession(String id, String customerId, Date lastAccessedTime, Date timeoutTime) {
         this.id = id;
-        this.customerid = customerid;
+        this.customerId = customerId;
         this.lastAccessedTime = lastAccessedTime;
         this.timeoutTime = timeoutTime;
     }
@@ -53,12 +53,12 @@ public class CustomerSession implements Serializable {
         this.id = id;
     }
 
-    public String getCustomerid() {
-        return customerid;
+    public String getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomerid(String customerid) {
-        this.customerid = customerid;
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
     public Date getLastAccessedTime() {
@@ -79,7 +79,7 @@ public class CustomerSession implements Serializable {
 
     @Override
     public String toString() {
-        return "CustomerSession [id=" + id + ", customerid=" + customerid
+        return "CustomerSession [id=" + id + ", customerid=" + customerId
                 + ", lastAccessedTime=" + lastAccessedTime + ", timeoutTime="
                 + timeoutTime + "]";
     }
@@ -93,10 +93,10 @@ public class CustomerSession implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         CustomerSession other = (CustomerSession) obj;
-        if (customerid == null) {
-            if (other.customerid != null)
+        if (customerId == null) {
+            if (other.customerId != null)
                 return false;
-        } else if (!customerid.equals(other.customerid))
+        } else if (!customerId.equals(other.customerId))
             return false;
         if (id == null) {
             if (other.id != null)

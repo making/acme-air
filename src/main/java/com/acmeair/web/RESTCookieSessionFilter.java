@@ -77,7 +77,7 @@ public class RESTCookieSessionFilter implements Filter {
             // Need the URLDecoder so that I can get @ not %40
             final CustomerSession cs = customerService.validateSession(sessionId);
             if (cs != null) {
-                request.setAttribute(LOGIN_USER, cs.getCustomerid());
+                request.setAttribute(LOGIN_USER, cs.getCustomerId());
                 chain.doFilter(req, resp);
                 return;
             } else {

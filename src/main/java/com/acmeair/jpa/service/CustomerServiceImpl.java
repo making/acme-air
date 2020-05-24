@@ -72,12 +72,12 @@ public class CustomerServiceImpl implements CustomerService {
             customerAddress.setStreetAddress1(updatedCustomer.getAddress().getStreetAddress1());
             customerAddress.setStreetAddress2(updatedCustomer.getAddress().getStreetAddress2());
 
-            customer.setMiles_ytd(updatedCustomer.getMiles_ytd());
+            customer.setMilesYtd(updatedCustomer.getMilesYtd());
             customer.setPassword(updatedCustomer.getPassword());
             customer.setPhoneNumber(updatedCustomer.getPhoneNumber());
             customer.setPhoneNumberType(updatedCustomer.getPhoneNumberType());
             customer.setStatus(updatedCustomer.getStatus());
-            customer.setTotal_miles(updatedCustomer.getTotal_miles());
+            customer.setTotalMiles(updatedCustomer.getTotalMiles());
 
             em.persist(customer);
             return customer;

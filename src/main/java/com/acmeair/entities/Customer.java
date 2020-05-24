@@ -39,8 +39,8 @@ public class Customer implements Serializable {
     private String id;
     private String password;
     private MemberShipStatus status;
-    private int total_miles;
-    private int miles_ytd;
+    private int totalMiles;
+    private int milesYtd;
 
     @Embedded
     private CustomerAddress address;
@@ -50,12 +50,12 @@ public class Customer implements Serializable {
     public Customer() {
     }
 
-    public Customer(String username, String password, MemberShipStatus status, int total_miles, int miles_ytd, CustomerAddress address, String phoneNumber, PhoneType phoneNumberType) {
+    public Customer(String username, String password, MemberShipStatus status, int totalMiles, int milesYtd, CustomerAddress address, String phoneNumber, PhoneType phoneNumberType) {
         this.id = username;
         this.password = password;
         this.status = status;
-        this.total_miles = total_miles;
-        this.miles_ytd = miles_ytd;
+        this.totalMiles = totalMiles;
+        this.milesYtd = milesYtd;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.phoneNumberType = phoneNumberType;
@@ -85,20 +85,20 @@ public class Customer implements Serializable {
         this.status = status;
     }
 
-    public int getTotal_miles() {
-        return total_miles;
+    public int getTotalMiles() {
+        return totalMiles;
     }
 
-    public void setTotal_miles(int total_miles) {
-        this.total_miles = total_miles;
+    public void setTotalMiles(int total_miles) {
+        this.totalMiles = total_miles;
     }
 
-    public int getMiles_ytd() {
-        return miles_ytd;
+    public int getMilesYtd() {
+        return milesYtd;
     }
 
-    public void setMiles_ytd(int miles_ytd) {
-        this.miles_ytd = miles_ytd;
+    public void setMilesYtd(int miles_ytd) {
+        this.milesYtd = miles_ytd;
     }
 
     public String getPhoneNumber() {
@@ -128,8 +128,8 @@ public class Customer implements Serializable {
     @Override
     public String toString() {
         return "Customer [id=" + id + ", password=" + password + ", status="
-                + status + ", total_miles=" + total_miles + ", miles_ytd="
-                + miles_ytd + ", address=" + address + ", phoneNumber="
+                + status + ", totalMiles=" + totalMiles + ", milesYtd="
+                + milesYtd + ", address=" + address + ", phoneNumber="
                 + phoneNumber + ", phoneNumberType=" + phoneNumberType + "]";
     }
 
@@ -152,7 +152,7 @@ public class Customer implements Serializable {
                 return false;
         } else if (!id.equals(other.id))
             return false;
-        if (miles_ytd != other.miles_ytd)
+        if (milesYtd != other.milesYtd)
             return false;
         if (password == null) {
             if (other.password != null)
@@ -168,7 +168,7 @@ public class Customer implements Serializable {
             return false;
         if (status != other.status)
             return false;
-        if (total_miles != other.total_miles)
+        if (totalMiles != other.totalMiles)
             return false;
         return true;
     }
