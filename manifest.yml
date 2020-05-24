@@ -6,5 +6,8 @@ applications:
     JBP_CONFIG_OPEN_JDK_JRE: '{memory_calculator: {stack_threads: 16}, jre: {version: 11.+}}'
     JAVA_OPTS: -XX:ReservedCodeCacheSize=32M -Xss512k -Duser.timezone=Asia/Tokyo
     SPRING_JPA_HIBERNATE_DDLAUTO: update
+    SPRING_RESOURCES_CACHE_CACHECONTROL_MAXAGE: 3d
+    SERVER_COMPRESSION_ENABLED: true
+    SERVER_COMPRESSION_MINRESPONSESIZE: 1KB
   services:
   - acmeair-db
