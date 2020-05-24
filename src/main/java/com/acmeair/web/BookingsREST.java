@@ -47,7 +47,7 @@ public class BookingsREST {
             @FormParam("retFlightSegId") String retFlightSegId,
             @FormParam("oneWayFlight") boolean oneWay) {
         try {
-            BookingPK bookingIdTo = bs.bookFlight(userid, new FlightPK(toFlightSegId, toFlightId));
+            final BookingPK bookingIdTo = bs.bookFlight(userid, new FlightPK(toFlightSegId, toFlightId));
             BookingPK bookingIdReturn = null;
             if (!oneWay) {
                 bookingIdReturn = bs.bookFlight(userid, new FlightPK(retFlightSegId, retFlightId));
@@ -58,7 +58,6 @@ public class BookingsREST {
                 bi = new BookingInfo(bookingIdTo.getId(), bookingIdReturn.getId(), oneWay);
             else
                 bi = new BookingInfo(bookingIdTo.getId(), null, oneWay);
-
             return Response.ok(bi).build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,8 +72,7 @@ public class BookingsREST {
             @PathParam("number") String number,
             @PathParam("userid") String userid) {
         try {
-            Booking b = bs.getBooking(userid, number);
-            return b;
+            return bs.getBooking(userid, number);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -103,7 +101,6 @@ public class BookingsREST {
         try {
             bs.cancelBooking(userid, number);
             return Response.ok("booking " + number + " deleted.").build();
-
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();

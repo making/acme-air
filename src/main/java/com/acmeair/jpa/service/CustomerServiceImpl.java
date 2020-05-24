@@ -48,7 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
                                    MemberShipStatus status, int total_miles, int miles_ytd,
                                    String phoneNumber, PhoneType phoneNumberType,
                                    CustomerAddress address) {
-        Customer customer = new Customer(username, password, status,
+        final Customer customer = new Customer(username, password, status,
                 total_miles, miles_ytd, address, phoneNumber, phoneNumberType);
         try {
             em.persist(customer);
@@ -62,9 +62,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer updateCustomer(Customer updatedCustomer) {
         try {
-            Customer customer = em.find(Customer.class, updatedCustomer.getUsername());
+            final Customer customer = em.find(Customer.class, updatedCustomer.getUsername());
 
-            CustomerAddress customerAddress = customer.getAddress();
+            final CustomerAddress customerAddress = customer.getAddress();
             customerAddress.setCity(updatedCustomer.getAddress().getCity());
             customerAddress.setCountry(updatedCustomer.getAddress().getCountry());
             customerAddress.setPostalCode(updatedCustomer.getAddress().getPostalCode());
@@ -88,14 +88,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer getCustomerByUsername(String username) {
-        Customer customer = em.find(Customer.class, username);
-        return customer;
+        return em.find(Customer.class, username);
     }
 
     @Override
     public boolean validateCustomer(String username, String password) {
         boolean validatedCustomer = false;
-        Customer customerToValidate = getCustomerByUsername(username);
+        final Customer customerToValidate = getCustomerByUsername(username);
         if (customerToValidate != null) {
             validatedCustomer = password.equals(customerToValidate.getPassword());
         }
@@ -104,7 +103,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer getCustomerByUsernameAndPassword(String username, String password) {
-        Customer c = getCustomerByUsername(username);
+        final Customer c = getCustomerByUsername(username);
         if (!c.getPassword().equals(password)) {
             return null;
         }
@@ -115,12 +114,12 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerSession validateSession(String sessionid) {
         try {
-            CustomerSession cSession = em.find(CustomerSession.class, sessionid);
+            final CustomerSession cSession = em.find(CustomerSession.class, sessionid);
             if (cSession == null) {
                 return null;
             }
 
-            Date now = new Date();
+            final Date now = new Date();
 
             if (cSession.getTimeoutTime().before(now)) {
                 em.remove(cSession);
@@ -136,13 +135,13 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerSession createSession(String customerId) {
         try {
-            String sessionId = keyGenerator.generate().toString();
-            Date now = new Date();
-            Calendar c = Calendar.getInstance();
+            final String sessionId = keyGenerator.generate().toString();
+            final Date now = new Date();
+            final Calendar c = Calendar.getInstance();
             c.setTime(now);
             c.add(Calendar.DAY_OF_YEAR, DAYS_TO_ALLOW_SESSION);
-            Date expiration = c.getTime();
-            CustomerSession cSession = new CustomerSession(sessionId, customerId, now, expiration);
+            final Date expiration = c.getTime();
+            final CustomerSession cSession = new CustomerSession(sessionId, customerId, now, expiration);
             em.persist(cSession);
             return cSession;
         } catch (Exception e) {
@@ -154,7 +153,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void invalidateSession(String sessionid) {
         try {
-            CustomerSession cSession = em.find(CustomerSession.class, sessionid);
+            final CustomerSession cSession = em.find(CustomerSession.class, sessionid);
             if (cSession != null) {
                 em.remove(cSession);
             }

@@ -38,15 +38,15 @@ public class LoginREST {
     @Produces("text/plain")
     public Response login(@FormParam("login") String login, @FormParam("password") String password) {
         try {
-            boolean validCustomer = customerService.validateCustomer(login, password);
+            final boolean validCustomer = customerService.validateCustomer(login, password);
 
             if (!validCustomer) {
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
 
-            CustomerSession session = customerService.createSession(login);
+            final CustomerSession session = customerService.createSession(login);
             // TODO:  Need to fix the security issues here - they are pretty gross likely
-            NewCookie sessCookie = new NewCookie(SESSIONID_COOKIE_NAME, session.getId());
+            final NewCookie sessCookie = new NewCookie(SESSIONID_COOKIE_NAME, session.getId());
             // TODO: The mobile client app requires JSON in the response.
             // To support the mobile client app, choose one of the following designs:
             // - Change this method to return JSON, and change the web app javascript to handle a JSON response.
@@ -74,7 +74,7 @@ public class LoginREST {
             // doing this will set the cookie to the empty string, but the browser will still send the cookie to future requests
             // and the server will need to detect the value is invalid vs actually forcing the browser to time out the cookie and
             // not send it to begin with
-            NewCookie sessCookie = new NewCookie(SESSIONID_COOKIE_NAME, "");
+            final NewCookie sessCookie = new NewCookie(SESSIONID_COOKIE_NAME, "");
             return Response.ok("logged out").cookie(sessCookie).build();
         } catch (Exception e) {
             e.printStackTrace();

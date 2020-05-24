@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,57 +48,49 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public List<Flight> getFlightByAirportsAndDepartureDate(String fromAirport, String toAirport, Date deptDate) {
-        List<Flight> flights = new ArrayList<Flight>();
-
-        Query q = em.createQuery("SELECT obj FROM FlightSegment obj where obj.destPort=?1 and obj.originPort=?2");
-        q.setParameter(1, toAirport);
-        q.setParameter(2, fromAirport);
-
-        List<FlightSegment> results = (List<FlightSegment>) q.getResultList();
+        final List<Flight> flights = new ArrayList<Flight>();
+        final TypedQuery<FlightSegment> q = em.createQuery("SELECT obj FROM FlightSegment obj where obj.destPort=?1 and obj.originPort=?2", FlightSegment.class)
+                .setParameter(1, toAirport)
+                .setParameter(2, fromAirport);
+        final List<FlightSegment> results = q.getResultList();
         for (FlightSegment seg : results) {
-            Query qq = em.createQuery("SELECT obj FROM Flight obj where  obj.scheduledDepartureTime=?1 and obj.pkey.flightSegmentId=?2");
-            qq.setParameter(1, deptDate);
-            qq.setParameter(2, seg.getFlightName());
-
-            List<Flight> foundFlights = (List<Flight>) qq.getResultList();
+            final TypedQuery<Flight> qq = em.createQuery("SELECT obj FROM Flight obj where  obj.scheduledDepartureTime=?1 and obj.pkey.flightSegmentId=?2", Flight.class)
+                    .setParameter(1, deptDate)
+                    .setParameter(2, seg.getFlightName());
+            final List<Flight> foundFlights = qq.getResultList();
             for (Flight flight : foundFlights) {
                 flight.setFlightSegment(seg);
                 flights.add(flight);
             }
         }
-
         return flights;
     }
 
     @Override
     public List<Flight> getFlightByAirports(String fromAirport, String toAirport) {
-        Query q = em.createQuery("SELECT obj FROM FlightSegment obj where obj.destPort=?1 and obj.originPort=?2");
-        q.setParameter(1, toAirport);
-        q.setParameter(2, fromAirport);
-
-        List<Flight> flights = new ArrayList<Flight>();
-
-        List<FlightSegment> results = (List<FlightSegment>) q.getResultList();
+        final TypedQuery<FlightSegment> q = em.createQuery("SELECT obj FROM FlightSegment obj where obj.destPort=?1 and obj.originPort=?2", FlightSegment.class)
+                .setParameter(1, toAirport)
+                .setParameter(2, fromAirport);
+        final List<Flight> flights = new ArrayList<>();
+        final List<FlightSegment> results = q.getResultList();
         for (FlightSegment seg : results) {
-            Query qq = em.createQuery("SELECT obj FROM Flight obj where obj.pkey.flightSegmentId=?1");
-            qq.setParameter(1, seg.getFlightName());
-
-            List<Flight> foundFlights = (List<Flight>) qq.getResultList();
+            final TypedQuery<Flight> qq = em.createQuery("SELECT obj FROM Flight obj where obj.pkey.flightSegmentId=?1", Flight.class)
+                    .setParameter(1, seg.getFlightName());
+            final List<Flight> foundFlights = qq.getResultList();
             for (Flight flight : foundFlights) {
                 flight.setFlightSegment(seg);
                 flights.add(flight);
             }
         }
-
         return flights;
     }
 
     @Transactional
     @Override
     public void storeAirportMapping(AirportCodeMapping mapping) {
-        Query q = em.createQuery("SELECT obj FROM AirportCodeMapping obj where obj.id=?1 and obj.airportName=?2");
-        q.setParameter(1, mapping.getAirportCode());
-        q.setParameter(2, mapping.getAirportName());
+        final TypedQuery<AirportCodeMapping> q = em.createQuery("SELECT obj FROM AirportCodeMapping obj where obj.id=?1 and obj.airportName=?2", AirportCodeMapping.class)
+                .setParameter(1, mapping.getAirportCode())
+                .setParameter(2, mapping.getAirportName());
         if (q.getResultList().isEmpty()) {
             try {
                 em.persist(mapping);
@@ -116,8 +108,8 @@ public class FlightServiceImpl implements FlightService {
                                   int numFirstClassSeats, int numEconomyClassSeats,
                                   String airplaneTypeId) {
         try {
-            String id = keyGenerator.generate().toString();
-            Flight flight = new Flight(id, flightSegmentId,
+            final String id = keyGenerator.generate().toString();
+            final Flight flight = new Flight(id, flightSegmentId,
                     scheduledDepartureTime, scheduledArrivalTime,
                     firstClassBaseCost, economyClassBaseCost,
                     numFirstClassSeats, numEconomyClassSeats, airplaneTypeId);

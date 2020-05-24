@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.Date;
 import java.util.List;
 
@@ -48,14 +48,11 @@ public class BookingServiceImpl implements BookingService {
         try {
             // We still delegate to the flight and customer service for the map
             // access than getting the map instance directly
-            Flight f = flightService.getFlightByFlightKey(flightId);
-            Customer c = customerService.getCustomerByUsername(customerId);
-
-            Booking newBooking = new Booking(keyGenerator.generate().toString(), new Date(), c, f);
-            BookingPK key = newBooking.getPkey();
-
+            final Flight f = flightService.getFlightByFlightKey(flightId);
+            final Customer c = customerService.getCustomerByUsername(customerId);
+            final Booking newBooking = new Booking(keyGenerator.generate().toString(), new Date(), c, f);
+            final BookingPK key = newBooking.getPkey();
             em.persist(newBooking);
-
             return key;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -64,24 +61,21 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking getBooking(String user, String id) {
-        BookingPK key = new BookingPK(user, id);
+        final BookingPK key = new BookingPK(user, id);
         return em.find(Booking.class, key);
     }
 
     @Override
     public List<Booking> getBookingsByUser(String user) {
-        Query q = em.createQuery("SELECT obj FROM Booking obj where obj.customer.id=?1");
-        q.setParameter(1, user);
-
-        List<Booking> results = (List<Booking>) q.getResultList();
-
-        return results;
+        final TypedQuery<Booking> q = em.createQuery("SELECT obj FROM Booking obj where obj.customer.id=?1", Booking.class)
+                .setParameter(1, user);
+        return q.getResultList();
     }
 
     @Transactional
     @Override
     public void cancelBooking(String user, String id) {
-        Booking booking = getBooking(user, id);
+        final Booking booking = getBooking(user, id);
         if (booking != null) {
             em.remove(booking);
         }

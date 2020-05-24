@@ -46,21 +46,19 @@ public class FlightsREST {
             @FormParam("returnDate") String returnDate,
             @FormParam("oneWay") boolean oneWay
     ) {
-        TripFlightOptions options = new TripFlightOptions();
-        ArrayList<TripLegInfo> legs = new ArrayList<TripLegInfo>();
-
-        TripLegInfo toInfo = new TripLegInfo();
-        List<Flight> toFlights = flightService.getFlightByAirportsAndDepartureDate(fromAirport, toAirport, Date.from(Instant.parse(fromDate)));
+        final TripFlightOptions options = new TripFlightOptions();
+        final ArrayList<TripLegInfo> legs = new ArrayList<>();
+        final TripLegInfo toInfo = new TripLegInfo();
+        final List<Flight> toFlights = flightService.getFlightByAirportsAndDepartureDate(fromAirport, toAirport, Date.from(Instant.parse(fromDate)));
         toInfo.setFlightsOptions(toFlights);
         legs.add(toInfo);
         toInfo.setCurrentPage(0);
         toInfo.setHasMoreOptions(false);
         toInfo.setNumPages(1);
         toInfo.setPageSize(TripLegInfo.DEFAULT_PAGE_SIZE);
-
         if (!oneWay) {
-            TripLegInfo retInfo = new TripLegInfo();
-            List<Flight> retFlights = flightService.getFlightByAirportsAndDepartureDate(toAirport, fromAirport, Date.from(Instant.parse(returnDate)));
+            final TripLegInfo retInfo = new TripLegInfo();
+            final List<Flight> retFlights = flightService.getFlightByAirportsAndDepartureDate(toAirport, fromAirport, Date.from(Instant.parse(returnDate)));
             retInfo.setFlightsOptions(retFlights);
             legs.add(retInfo);
             retInfo.setCurrentPage(0);
@@ -71,9 +69,7 @@ public class FlightsREST {
         } else {
             options.setTripLegs(1);
         }
-
         options.setTripFlights(legs);
-
         return options;
     }
 
@@ -87,21 +83,19 @@ public class FlightsREST {
             @FormParam("toAirport") String toAirport,
             @FormParam("oneWay") boolean oneWay
     ) {
-        TripFlightOptions options = new TripFlightOptions();
-        ArrayList<TripLegInfo> legs = new ArrayList<TripLegInfo>();
-
-        TripLegInfo toInfo = new TripLegInfo();
-        List<Flight> toFlights = flightService.getFlightByAirports(fromAirport, toAirport);
+        final TripFlightOptions options = new TripFlightOptions();
+        final ArrayList<TripLegInfo> legs = new ArrayList<>();
+        final TripLegInfo toInfo = new TripLegInfo();
+        final List<Flight> toFlights = flightService.getFlightByAirports(fromAirport, toAirport);
         toInfo.setFlightsOptions(toFlights);
         legs.add(toInfo);
         toInfo.setCurrentPage(0);
         toInfo.setHasMoreOptions(false);
         toInfo.setNumPages(1);
         toInfo.setPageSize(TripLegInfo.DEFAULT_PAGE_SIZE);
-
         if (!oneWay) {
-            TripLegInfo retInfo = new TripLegInfo();
-            List<Flight> retFlights = flightService.getFlightByAirports(toAirport, fromAirport);
+            final TripLegInfo retInfo = new TripLegInfo();
+            final List<Flight> retFlights = flightService.getFlightByAirports(toAirport, fromAirport);
             retInfo.setFlightsOptions(retFlights);
             legs.add(retInfo);
             retInfo.setCurrentPage(0);
@@ -112,10 +106,7 @@ public class FlightsREST {
         } else {
             options.setTripLegs(1);
         }
-
         options.setTripFlights(legs);
-
         return options;
     }
-
 }

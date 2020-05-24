@@ -32,10 +32,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.StringTokenizer;
+import java.util.*;
 
 @Component
 @Path("/loader")
@@ -89,10 +86,10 @@ public class LoaderREST {
 
     public void loadCustomers(long numCustomers) {
         System.out.println("Loading customer data...");
-        CustomerAddress address = new CustomerAddress("123 Main St.", null, "Anytown", "NC", "USA", "27617");
+        final CustomerAddress address = new CustomerAddress("123 Main St.", null, "Anytown", "NC", "USA", "27617");
         for (long ii = 0; ii < numCustomers; ii++) {
-            String id = "uid" + ii + "@email.com";
-            Customer customer = customerService.getCustomerByUsername(id);
+            final String id = "uid" + ii + "@email.com";
+            final Customer customer = customerService.getCustomerByUsername(id);
             if (customer == null) {
                 customerService.createCustomer(id, "password", Customer.MemberShipStatus.GOLD, 1000000, 1000, "919-123-4567", PhoneType.BUSINESS, address);
             }
@@ -102,11 +99,11 @@ public class LoaderREST {
 
     public void loadFlights(int segments) throws Exception {
         System.out.println("Loading flight data...");
-        InputStream csvInputStream = new ClassPathResource("mileage.csv").getInputStream();
-        LineNumberReader lnr = new LineNumberReader(new InputStreamReader(csvInputStream));
-        String line1 = lnr.readLine();
+        final InputStream csvInputStream = new ClassPathResource("mileage.csv").getInputStream();
+        final LineNumberReader lnr = new LineNumberReader(new InputStreamReader(csvInputStream));
+        final String line1 = lnr.readLine();
         StringTokenizer st = new StringTokenizer(line1, ",");
-        ArrayList<AirportCodeMapping> airports = new ArrayList<AirportCodeMapping>();
+        final List<AirportCodeMapping> airports = new ArrayList<>();
 
         // read the first line which are airport names
         while (st.hasMoreTokens()) {
@@ -116,11 +113,11 @@ public class LoaderREST {
         }
         // read the second line which contains matching airport codes for the
         // first line
-        String line2 = lnr.readLine();
+        final String line2 = lnr.readLine();
         st = new StringTokenizer(line2, ",");
         int ii = 0;
         while (st.hasMoreTokens()) {
-            String airportCode = st.nextToken();
+            final String airportCode = st.nextToken();
             airports.get(ii).setAirportCode(airportCode);
             ii++;
         }
@@ -135,41 +132,41 @@ public class LoaderREST {
                 break;
             }
             st = new StringTokenizer(line, ",");
-            String airportName = st.nextToken();
-            String airportCode = st.nextToken();
+            final String airportName = st.nextToken();
+            final String airportCode = st.nextToken();
             if (!alreadyInCollection(airportCode, airports)) {
-                AirportCodeMapping acm = new AirportCodeMapping();
+                final AirportCodeMapping acm = new AirportCodeMapping();
                 acm.setAirportName(airportName);
                 acm.setAirportCode(airportCode);
                 airports.add(acm);
             }
             int indexIntoTopLine = 0;
             while (st.hasMoreTokens()) {
-                String milesString = st.nextToken();
+                final String milesString = st.nextToken();
                 if (milesString.equals("NA")) {
                     indexIntoTopLine++;
                     continue;
                 }
-                int miles = Integer.parseInt(milesString);
-                String toAirport = airports.get(indexIntoTopLine).getAirportCode();
+                final int miles = Integer.parseInt(milesString);
+                final String toAirport = airports.get(indexIntoTopLine).getAirportCode();
                 if (!flightService.getFlightByAirports(airportCode, toAirport).isEmpty()) {
                     // already there
                     continue;
                 }
-                String flightId = "AA" + flightNumber;
-                FlightSegment flightSeg = new FlightSegment(flightId, airportCode, toAirport, miles);
+                final String flightId = "AA" + flightNumber;
+                final FlightSegment flightSeg = new FlightSegment(flightId, airportCode, toAirport, miles);
                 flightService.storeFlightSegment(flightSeg);
-                Date now = new Date();
+                final Date now = new Date();
                 for (int daysFromNow = 0; daysFromNow < segments; daysFromNow++) {
-                    Calendar c = Calendar.getInstance();
+                    final Calendar c = Calendar.getInstance();
                     c.setTime(now);
                     c.set(Calendar.HOUR_OF_DAY, 0);
                     c.set(Calendar.MINUTE, 0);
                     c.set(Calendar.SECOND, 0);
                     c.set(Calendar.MILLISECOND, 0);
                     c.add(Calendar.DATE, daysFromNow);
-                    Date departureTime = c.getTime();
-                    Date arrivalTime = getArrivalTime(departureTime, miles);
+                    final Date departureTime = c.getTime();
+                    final Date arrivalTime = getArrivalTime(departureTime, miles);
                     flightService.createNewFlight(flightId, departureTime, arrivalTime, new BigDecimal(500),
                             new BigDecimal(200), 10, 200, "B747");
 
@@ -187,19 +184,19 @@ public class LoaderREST {
     }
 
     private static Date getArrivalTime(Date departureTime, int mileage) {
-        double averageSpeed = 600.0; // 600 miles/hours
-        double hours = (double) mileage / averageSpeed; // miles / miles/hour =
+        final double averageSpeed = 600.0; // 600 miles/hours
+        final double hours = (double) mileage / averageSpeed; // miles / miles/hour =
         // hours
-        double partsOfHour = hours % 1.0;
-        int minutes = (int) (60.0 * partsOfHour);
-        Calendar c = Calendar.getInstance();
+        final double partsOfHour = hours % 1.0;
+        final int minutes = (int) (60.0 * partsOfHour);
+        final Calendar c = Calendar.getInstance();
         c.setTime(departureTime);
         c.add(Calendar.HOUR, (int) hours);
         c.add(Calendar.MINUTE, minutes);
         return c.getTime();
     }
 
-    static private boolean alreadyInCollection(String airportCode, ArrayList<AirportCodeMapping> airports) {
+    static private boolean alreadyInCollection(String airportCode, List<AirportCodeMapping> airports) {
         for (int ii = 0; ii < airports.size(); ii++) {
             if (airports.get(ii).getAirportCode().equals(airportCode)) {
                 return true;

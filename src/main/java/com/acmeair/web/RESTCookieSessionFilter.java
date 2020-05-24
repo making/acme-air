@@ -43,10 +43,10 @@ public class RESTCookieSessionFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) resp;
+        final HttpServletRequest request = (HttpServletRequest) req;
+        final HttpServletResponse response = (HttpServletResponse) resp;
 
-        String path = request.getServletPath() + request.getPathInfo();
+        final String path = request.getServletPath() + request.getPathInfo();
 
         // could do .startsWith for now, but plan to move LOGOUT to its own REST interface eventually
         if (path.endsWith(LOGIN_PATH) || path.endsWith(LOGOUT_PATH) || path.startsWith("/rest/api/loader/")) {
@@ -55,7 +55,7 @@ public class RESTCookieSessionFilter implements Filter {
             return;
         }
 
-        Cookie cookies[] = request.getCookies();
+        final Cookie cookies[] = request.getCookies();
         Cookie sessionCookie = null;
         if (cookies != null) {
             for (Cookie c : cookies) {
@@ -75,7 +75,7 @@ public class RESTCookieSessionFilter implements Filter {
                 return;
             }
             // Need the URLDecoder so that I can get @ not %40
-            CustomerSession cs = customerService.validateSession(sessionId);
+            final CustomerSession cs = customerService.validateSession(sessionId);
             if (cs != null) {
                 request.setAttribute(LOGIN_USER, cs.getCustomerid());
                 chain.doFilter(req, resp);

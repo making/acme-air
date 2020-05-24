@@ -37,7 +37,7 @@ public class CustomerREST {
 
 
     private boolean validate(String customerid) {
-        String loginUser = (String) request.getAttribute(RESTCookieSessionFilter.LOGIN_USER);
+        final String loginUser = (String) request.getAttribute(RESTCookieSessionFilter.LOGIN_USER);
         return customerid.equals(loginUser);
     }
 
@@ -49,10 +49,8 @@ public class CustomerREST {
             // make sure the user isn't trying to update a customer other than the one currently logged in
             if (!validate(customerid)) {
                 return Response.status(Response.Status.FORBIDDEN).build();
-
             }
-            Customer customer = customerService.getCustomerByUsername(customerid);
-
+            final Customer customer = customerService.getCustomerByUsername(customerid);
             return Response.ok(customer).build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,14 +65,12 @@ public class CustomerREST {
         if (!validate(customer.getUsername())) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
-
-        Customer customerFromDB = customerService.getCustomerByUsernameAndPassword(customer.getUsername(), customer.getPassword());
+        final Customer customerFromDB = customerService.getCustomerByUsernameAndPassword(customer.getUsername(), customer.getPassword());
         if (customerFromDB == null) {
             // either the customer doesn't exist or the password is wrong
             return Response.status(Response.Status.FORBIDDEN).build();
         }
-
-        CustomerAddress addressFromDB = customerFromDB.getAddress();
+        final CustomerAddress addressFromDB = customerFromDB.getAddress();
         addressFromDB.setStreetAddress1(customer.getAddress().getStreetAddress1());
         if (customer.getAddress().getStreetAddress2() != null) {
             addressFromDB.setStreetAddress2(customer.getAddress().getStreetAddress2());
@@ -89,7 +85,6 @@ public class CustomerREST {
 
         customerService.updateCustomer(customerFromDB);
         customerFromDB.setPassword(null);
-
         return Response.ok(customerFromDB).build();
     }
 }
