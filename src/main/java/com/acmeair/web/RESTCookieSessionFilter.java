@@ -17,14 +17,12 @@ package com.acmeair.web;
 
 import com.acmeair.entities.CustomerSession;
 import com.acmeair.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import java.io.IOException;
 
 @WebFilter(urlPatterns = "/rest/api/*")
@@ -33,10 +31,11 @@ public class RESTCookieSessionFilter implements Filter {
     static final String LOGIN_USER = "acmeair.login_user";
     private static final String LOGIN_PATH = "/rest/api/login";
     private static final String LOGOUT_PATH = "/rest/api/login/logout";
-    @Autowired
-    private CustomerService customerService;
-    @Autowired
-    private DataSource source1;
+    private final CustomerService customerService;
+
+    public RESTCookieSessionFilter(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     @Override
     public void destroy() {

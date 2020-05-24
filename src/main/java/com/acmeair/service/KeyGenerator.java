@@ -16,5 +16,5 @@
 package com.acmeair.service;
 
 public interface KeyGenerator {
-    public abstract Object generate();
+    Object generate();
 }

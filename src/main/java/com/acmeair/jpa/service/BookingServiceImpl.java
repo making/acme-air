@@ -20,33 +20,29 @@ import com.acmeair.service.BookingService;
 import com.acmeair.service.CustomerService;
 import com.acmeair.service.FlightService;
 import com.acmeair.service.KeyGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
 
-@Service("bookingService")
+@Service
 public class BookingServiceImpl implements BookingService {
+    private final EntityManager em;
+    private final FlightService flightService;
+    private final CustomerService customerService;
+    private final KeyGenerator keyGenerator;
 
-    @Autowired
-    EntityManager em;
+    public BookingServiceImpl(EntityManager em, FlightService flightService, CustomerService customerService, KeyGenerator keyGenerator) {
+        this.em = em;
+        this.flightService = flightService;
+        this.customerService = customerService;
+        this.keyGenerator = keyGenerator;
+    }
 
-    @Autowired
-    FlightService flightService;
-
-    @Autowired
-    CustomerService customerService;
-
-    @Autowired
-    KeyGenerator keyGenerator;
-
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     @Override
     public BookingPK bookFlight(String customerId, FlightPK flightId) {
         try {
@@ -82,7 +78,7 @@ public class BookingServiceImpl implements BookingService {
         return results;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     @Override
     public void cancelBooking(String user, String id) {
         Booking booking = getBooking(user, id);

@@ -22,7 +22,6 @@ import com.acmeair.entities.CustomerAddress;
 import com.acmeair.entities.FlightSegment;
 import com.acmeair.service.CustomerService;
 import com.acmeair.service.FlightService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -41,12 +40,15 @@ import java.util.StringTokenizer;
 @Component
 @Path("/loader")
 public class LoaderREST {
-    @Autowired
-    private CustomerService customerService;
-    @Autowired
-    private FlightService flightService;
+    private final CustomerService customerService;
+    private final FlightService flightService;
 
     private static Object lock = new Object();
+
+    public LoaderREST(CustomerService customerService, FlightService flightService) {
+        this.customerService = customerService;
+        this.flightService = flightService;
+    }
 
     @GET
     @Path("/load")

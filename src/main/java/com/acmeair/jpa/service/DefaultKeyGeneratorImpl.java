@@ -18,7 +18,7 @@ package com.acmeair.jpa.service;
 import com.acmeair.service.KeyGenerator;
 import org.springframework.stereotype.Service;
 
-@Service("keyGenerator")
+@Service
 public class DefaultKeyGeneratorImpl implements KeyGenerator {
 
     @Override

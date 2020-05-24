@@ -17,7 +17,6 @@ package com.acmeair.web;
 
 import com.acmeair.entities.Flight;
 import com.acmeair.service.FlightService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -29,8 +28,11 @@ import java.util.List;
 @Component
 @Path("/flights")
 public class FlightsREST {
-    @Autowired
-    private FlightService flightService;
+    private final FlightService flightService;
+
+    public FlightsREST(FlightService flightService) {
+        this.flightService = flightService;
+    }
 
     // TODO:  Consider a pure GET implementation of this service, but maybe not much value due to infrequent similar searches
     @POST

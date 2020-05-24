@@ -18,7 +18,6 @@ package com.acmeair.web;
 import com.acmeair.entities.Customer;
 import com.acmeair.entities.CustomerAddress;
 import com.acmeair.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,11 +27,13 @@ import javax.ws.rs.core.Response;
 @Component
 @Path("/customer")
 public class CustomerREST {
-    @Autowired
-    private CustomerService customerService;
+    private final CustomerService customerService;
+    private final HttpServletRequest request;
 
-    @Autowired
-    private HttpServletRequest request;
+    public CustomerREST(CustomerService customerService, HttpServletRequest request) {
+        this.customerService = customerService;
+        this.request = request;
+    }
 
 
     private boolean validate(String customerid) {

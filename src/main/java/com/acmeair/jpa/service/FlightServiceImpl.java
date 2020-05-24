@@ -21,9 +21,7 @@ import com.acmeair.entities.FlightPK;
 import com.acmeair.entities.FlightSegment;
 import com.acmeair.service.FlightService;
 import com.acmeair.service.KeyGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -33,14 +31,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Service("flightService")
+@Service
 public class FlightServiceImpl implements FlightService {
+    private final EntityManager em;
+    private final KeyGenerator keyGenerator;
 
-    @Autowired
-    EntityManager em;
-
-    @Autowired
-    KeyGenerator keyGenerator;
+    public FlightServiceImpl(EntityManager em, KeyGenerator keyGenerator) {
+        this.em = em;
+        this.keyGenerator = keyGenerator;
+    }
 
     @Override
     public Flight getFlightByFlightKey(FlightPK key) {
@@ -94,7 +93,7 @@ public class FlightServiceImpl implements FlightService {
         return flights;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     @Override
     public void storeAirportMapping(AirportCodeMapping mapping) {
         Query q = em.createQuery("SELECT obj FROM AirportCodeMapping obj where obj.id=?1 and obj.airportName=?2");
@@ -109,7 +108,7 @@ public class FlightServiceImpl implements FlightService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     @Override
     public Flight createNewFlight(String flightSegmentId,
                                   Date scheduledDepartureTime, Date scheduledArrivalTime,
@@ -129,7 +128,7 @@ public class FlightServiceImpl implements FlightService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     @Override
     public void storeFlightSegment(FlightSegment flightSeg) {
         try {

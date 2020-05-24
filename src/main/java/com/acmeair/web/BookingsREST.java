@@ -19,7 +19,6 @@ import com.acmeair.entities.Booking;
 import com.acmeair.entities.BookingPK;
 import com.acmeair.entities.FlightPK;
 import com.acmeair.service.BookingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.*;
@@ -30,8 +29,11 @@ import java.util.List;
 @Component
 @Path("/bookings")
 public class BookingsREST {
-    @Autowired
-    private BookingService bs;
+    private final BookingService bs;
+
+    public BookingsREST(BookingService bs) {
+        this.bs = bs;
+    }
 
     @POST
     @Consumes({"application/x-www-form-urlencoded"})

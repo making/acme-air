@@ -22,27 +22,27 @@ import com.acmeair.entities.CustomerAddress;
 import com.acmeair.entities.CustomerSession;
 import com.acmeair.service.CustomerService;
 import com.acmeair.service.KeyGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.Calendar;
 import java.util.Date;
 
-@Service("customerService")
+@Service
 public class CustomerServiceImpl implements CustomerService {
 
     private static final int DAYS_TO_ALLOW_SESSION = 1;
 
-    @Autowired
-    EntityManager em;
+    private final EntityManager em;
+    private final KeyGenerator keyGenerator;
 
-    @Autowired
-    KeyGenerator keyGenerator;
+    public CustomerServiceImpl(EntityManager em, KeyGenerator keyGenerator) {
+        this.em = em;
+        this.keyGenerator = keyGenerator;
+    }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     @Override
     public Customer createCustomer(String username, String password,
                                    MemberShipStatus status, int total_miles, int miles_ytd,
@@ -58,7 +58,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     @Override
     public Customer updateCustomer(Customer updatedCustomer) {
         try {
@@ -111,7 +111,7 @@ public class CustomerServiceImpl implements CustomerService {
         return c;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     @Override
     public CustomerSession validateSession(String sessionid) {
         try {
@@ -132,7 +132,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     @Override
     public CustomerSession createSession(String customerId) {
         try {
@@ -150,7 +150,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     @Override
     public void invalidateSession(String sessionid) {
         try {
